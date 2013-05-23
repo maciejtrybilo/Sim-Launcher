@@ -6,10 +6,11 @@ module SimLauncher
   class Client
     DEFAULT_SERVER_URI = "http://localhost:8881"
 
-    def initialize( app_path, sdk, family )
+    def initialize( app_path, sdk, family, tall = false )
       @app_path = File.expand_path( app_path )
       @sdk = sdk
       @family = family
+      @tall = tall
       self.server_uri = DEFAULT_SERVER_URI
     end
 
@@ -19,6 +20,10 @@ module SimLauncher
 
     def self.for_iphone_app( app_path, sdk = nil )
       self.new( app_path, sdk, 'iphone' )
+    end
+
+    def self.for_iphone4in_app( app_path, sdk = nil )
+      self.new( app_path, sdk, 'iphone', true )
     end
 
     def server_uri=(uri)
