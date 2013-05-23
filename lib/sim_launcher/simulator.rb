@@ -44,14 +44,15 @@ class Simulator
 
   end
 
-  def launch_ios_app(app_path, sdk_version, device_family, app_args = nil)
+  def launch_ios_app(app_path, sdk_version, device_family, tall = false, app_args = nil)
     if problem = SimLauncher.check_app_path( app_path )
       bangs = '!'*80
       raise "\n#{bangs}\nENCOUNTERED A PROBLEM WITH THE SPECIFIED APP PATH:\n\n#{problem}\n#{bangs}"
     end
     sdk_version ||= SdkDetector.new(self).latest_sdk_version
     args = ["--args"] + app_args.flatten if app_args
-    run_synchronous_command( :launch, app_path, '--sdk', sdk_version, '--family', device_family, '--exit', *args )
+    tallSwitch = ['--retina', '--tall'] if tall
+    run_synchronous_command( :launch, app_path, '--sdk', sdk_version, *tallSwitch, '--family', device_family, '--exit', *args )
   end
 
   def launch_ipad_app( app_path, sdk )
@@ -60,6 +61,10 @@ class Simulator
 
   def launch_iphone_app( app_path, sdk )
     launch_ios_app( app_path, sdk, 'iphone' )
+  end
+
+  def launch_iphone4in_app( app_path, sdk )
+    launch_ios_app( app_path, sdk, 'iphone', true )
   end
 
   def quit_simulator
